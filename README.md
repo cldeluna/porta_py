@@ -1,15 +1,27 @@
-# Cat Netmiko Utilities
+# Portable Utilities
 
 ##Synopsis
 
-Commonly used Netmiko utilities for Cisco network devices.
+Commonly used Netmiko utilities for Cisco network devices in a WinPython Portable Environment
 
 
 
 ##Installation
 
+### WinPython
+[WinPython](https://winpython.github.io/)
+
+msinfo in the search bar to determine Windows details
+
+(Default) = Comes with PyQt5 and Spyder IDE
+Pyside = Same as default, but with PySide2 instead of PyQt5
+Code = Same as default, and includes an integrated VSCode IDE
+Zero = minimal version, mostly just python
+
+https://sourceforge.net/projects/winpython/files/WinPython_3.8/3.8.6.0/
 
 
+### Virtual Environment
 ```
 pip install -r requests.txt
 ```
