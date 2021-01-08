@@ -20,7 +20,6 @@ import logging
 import sys
 
 
-
 def main():
 
     # Timestamp the start of the run so that a total run time can be calcuated at the end
@@ -31,12 +30,16 @@ def main():
 
     file_timestamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
 
+    # SAVING OUTPUT
+    utils.sub_dir(arguments.output_subdir)
+
     # https://www.kite.com/python/answers/how-to-print-logging-messages-to-both-stdout-and-to-a-file-in-python
     output_logger = logging.getLogger()
     output_logger.setLevel(logging.DEBUG)
 
     _ = utils.get_filename_wo_extension(arguments.json_dev_file)
-    output_log_fn = f"Log_{_}_{file_timestamp}.txt"
+    output_log_fn = os.path.join(os.getcwd(), arguments.output_subdir, f"Log_{_}_{file_timestamp}.txt")
+    # output_log_fn = f"Log_{_}_{file_timestamp}.txt"
     output_file_handler = logging.FileHandler(output_log_fn)
     stdout_handler = logging.StreamHandler(sys.stdout)
 
@@ -49,7 +52,7 @@ def main():
     # Keep a list of any files that did not have any output information
     no_output = []
 
-    utils.load_environment(debug=False)
+    # utils.load_environment(debug=False)
 
     # Get the current working directory to store the zip files
     curr_dir = os.getcwd()
@@ -103,6 +106,8 @@ def main():
                 output_logger.debug(f"\t{d} failed to respond to pings!")
                 # print(f"\t{d} failed to respond to pings!")
 
+
+    output_logger.debug(f"\nLog file saved as: \n\t{output_log_fn}\n")
     output_logger.debug(f"\nScript Execution Time: {datetime.datetime.now() - start_time}\n")
 
 
@@ -118,8 +123,10 @@ if __name__ == '__main__':
                                                                                  'option not give are .txt and .log')
     parser.add_argument('-m', '--message', action='store', default=f"Ping Run on {datetime.datetime.now()}",
                         help='Optional Descriptive message for ping run')
-    parser.add_argument('-o', '--output', action='store', default=os.getcwd(),
-                        help='Optional directory to store output')
+    parser.add_argument('-o', '--output_subdir',
+                        help='Name of output subdirectory for show command files. Default: ./local',
+                        action='store',
+                        default="local")
     parser.add_argument('-d', '--debug', action='store_true',
                         default=False, help='Enable ping debug. Default: Disabled')
     arguments = parser.parse_args()
