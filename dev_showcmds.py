@@ -94,6 +94,9 @@ def main():
         if arguments.note:
             note_text = utils.replace_space(arguments.note)
             basefn = f"{arguments.dev}_{datestamp}_{note_text}.txt"
+        elif arguments.show_cmd:
+            show_text = utils.replace_space(arguments.show_cmd)
+            basefn = f"{arguments.dev}_{datestamp}_{show_text}.txt"
         else:
             basefn = f"{arguments.dev}_{datestamp}.txt"
 

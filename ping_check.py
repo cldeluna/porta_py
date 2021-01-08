@@ -47,7 +47,7 @@ def main():
     output_logger.addHandler(stdout_handler)
 
     output_logger.debug(f"\nPing Run for Directory {arguments.json_dev_file} on {file_timestamp}\n")
-    output_logger.debug(f"Ping Run Message: {arguments.message}\n")
+    output_logger.debug(f"Ping Run Message: {arguments.note}\n")
 
     # Keep a list of any files that did not have any output information
     no_output = []
@@ -121,8 +121,8 @@ if __name__ == '__main__':
                                                                                  '".xxx" or comma delimited '
                                                                                  '".txt, .fil" Default values if '
                                                                                  'option not give are .txt and .log')
-    parser.add_argument('-m', '--message', action='store', default=f"Ping Run on {datetime.datetime.now()}",
-                        help='Optional Descriptive message for ping run')
+    parser.add_argument('-n', '--note', action='store', default=f"Ping Run on {datetime.datetime.now()}",
+                        help='Optional Descriptive message or note for ping run')
     parser.add_argument('-o', '--output_subdir',
                         help='Name of output subdirectory for show command files. Default: ./local',
                         action='store',
