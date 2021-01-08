@@ -23,6 +23,8 @@ https://sourceforge.net/projects/winpython/files/WinPython_3.8/3.8.6.0/
 
 WinPython Dot Version
 
+Felix is gonna need some help
+
 ### Virtual Environment
 ```
 pip install -r requests.txt
