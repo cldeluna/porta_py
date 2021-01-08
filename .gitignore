@@ -4,7 +4,7 @@ __pycache__
 *test*
 .idea/
 site*
-.env
+.env_sample
 *.zip
 local*
 Log*.txt

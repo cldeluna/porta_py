@@ -176,7 +176,7 @@ def replace_space(text, debug=False):
 
 
 def load_env_from_dotenv_file(path):
-    # Load the key/value pairs in the .env file as environment variables
+    # Load the key/value pairs in the .env_sample file as environment variables
     if os.path.isfile(path):
         dotenv.load_dotenv(path)
     else:

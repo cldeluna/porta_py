@@ -37,7 +37,8 @@ def main():
     print(f"===== Date is {datestamp} ====")
 
     # Load Credentials from environment variables
-    dotenv.load_dotenv(verbose=True)
+    # dotenv.load_dotenv(verbose=True)
+    utils.load_environment(debug=False)
 
     fn = "show_cmds.yml"
     cmd_dict = utils.read_yaml(fn)
