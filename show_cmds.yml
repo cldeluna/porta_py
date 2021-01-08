@@ -1,0 +1,75 @@
+# Dictionary where key is "ios_show_commands" and value is a list of show commands
+general_show_commands:
+  - term len 0
+  - show run
+  - show version
+  - show cdp neighbors
+  - show inventory
+  - dir
+ios_show_commands:
+  - term len 0
+  - show run
+  - show version
+  - show inventory
+  - show cdp nei
+  - show cd nei det
+  - show vlan
+  - show spanning-tree
+  - show spanning-tree root priority system-id
+  - show int
+  - show int status
+  - show int trunk
+  - show ip int br
+  - show ip arp
+  - show mac address-table
+  - show etherchannel sum
+  - show vrf
+  - show ip route
+  - show swi
+  - dir
+  - show boot system
+nxos_show_commands:
+  - term len 0
+  - show hostname
+  - show run
+  - show version
+  - show inventory
+  - show cdp nei
+  - show cd nei det
+  - show vlan
+  - show spanning-tree
+  - show int
+  - show int status
+  - show int trunk
+  - show ip int br
+  - show ip arp
+  - show mac address-table
+  - show port-channel sum
+  - show vrf
+  - show ip route
+  - dir
+wlc_show_commands:
+  - config paging disable
+  - show run-config commands
+  - show run-config commands no-ap
+  - show time
+  - show sysinfo
+  - show client state summary
+  - show queue-info
+  - show radius queue summary
+  - show dhcp stats
+  - show arp stats
+  - show coredump summary
+  - show process cpu
+  - show memory summary
+  - show imm chassis fan
+  - show imm chassis temperature
+  - show ap uptime
+  - show ap crash-file
+  - show ap summary
+pre_post_commands:
+  - term len 0
+  - show run
+  - show interface trunk
+  - show span
+  - show interface status
