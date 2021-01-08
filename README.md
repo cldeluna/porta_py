@@ -23,7 +23,7 @@ https://sourceforge.net/projects/winpython/files/WinPython_3.8/3.8.6.0/
 
 WinPython Dot Version
 
-Felix is gonna need some help
+Felix is gonna need ALOT of help
 
 ### Virtual Environment
 ```
