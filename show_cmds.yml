@@ -54,6 +54,7 @@ wlc_show_commands:
   - show run-config commands no-ap
   - show time
   - show sysinfo
+  - show wlan summary
   - show client state summary
   - show queue-info
   - show radius queue summary
