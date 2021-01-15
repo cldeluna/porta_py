@@ -54,20 +54,15 @@ wlc_show_commands:
   - show run-config commands no-ap
   - show time
   - show sysinfo
-  - show wlan summary
-  - show client state summary
-  - show queue-info
-  - show radius queue summary
-  - show dhcp stats
-  - show arp stats
-  - show coredump summary
-  - show process cpu
-  - show memory summary
-  - show imm chassis fan
-  - show imm chassis temperature
+  - show inventory
+  - show client summary
   - show ap uptime
   - show ap crash-file
   - show ap summary
+  - show wlan summary
+  - show interface summary
+  - show interface group summary
+  - sow wlan apgroups
 pre_post_commands:
   - term len 0
   - show run
