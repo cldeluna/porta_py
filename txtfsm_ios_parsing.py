@@ -99,7 +99,6 @@ def text_fsm_parse(template_fn, data):
     # Run the text through the FSM.
     # The argument 'template' is a file handle and 'raw_text_data' is a
     # string with the content from the show_inventory.txt file
-    # print(data)
     template = open(template_fn)
     re_table = textfsm.TextFSM(template)
     fsm_results = re_table.ParseText(data)
@@ -109,6 +108,105 @@ def text_fsm_parse(template_fn, data):
 
 
     return fsm_results, re_table
+
+
+def load_shcmd_lines(filepath):
+    """
+    Read file into list of lines
+    :param filepath:
+    :return:
+    """
+
+    with open(filepath, "r") as f:
+        file_contents = f.readlines()
+    # print(len(file_contents))
+    # print(file_contents)
+    return file_contents
+
+
+def get_show_section(lines_of_text, start_string, end_string, debug=False):
+    """
+    Given a file of many show commands, extract out a specific section
+
+    :param lines_of_text:
+    :param start_string:
+    :param end_string:
+    :param debug:
+    :return:
+    """
+
+    shrun_lines = []
+    in_show = False
+    for line in lines_of_text:
+
+        if re.search(start_string, line):
+            in_show = True
+            # print(start_string)
+            # print(line)
+
+        if in_show:
+            shrun_lines.append(line)
+            # print(line)
+
+        if re.search(end_string, line):
+            # print(end_string)
+            # print(line)
+            in_show = False
+
+    if len(shrun_lines) > 0:
+        shrun_lines.pop()
+
+    if debug:
+        print(f"From get_show_section Function:")
+        print(shrun_lines)
+        print(len(shrun_lines))
+    return list_to_str(shrun_lines)
+
+
+def list_to_str(list_of_lines, debug=False):
+    """
+    Used when a file is read in via readlines() resulting in a list of lines
+    and you need to put it back into a single string variable
+    Typically used with CiscoConfParse
+
+    Example:
+    parsed = ciscoconfparse.CiscoConfParse(save_file("temp_text.txt", text_output))
+
+    :param list_of_lines:
+    :param debug:
+    :return:
+    """
+    # ciscoconfparse wants a file so we have to rebuild the text in text_output and pass the parse command a file
+    text_output = ""
+    for line in list_of_lines:
+        text_output = text_output + line
+    if debug: print(text_output)
+
+    return text_output
+
+
+def search_string_dict(template_name):
+
+    search_string = {
+        "cisco_ios_show_interfaces" : {
+            "start": r"sh(ow)? int(erfaces)?",
+            "end": r" sh(ow)? int(erface)? status"
+        },
+        "cisco_ios_show_etherchannel_summary": {
+            "start": r"sh(ow)? ether(channel)? sum(mary)?",
+            "end": r" sh(ow)? vrf"
+        }
+
+    }
+
+    ss_dict = {}
+    if template_name in search_string.keys():
+        ss_dict = search_string[template_name]
+    else:
+        print(f"WARNING: Start and End RegEx for {template_name} have not been set!")
+
+    return ss_dict
+
 
 
 def main():
@@ -122,10 +220,20 @@ def main():
     # Mandatory argument passed to script - either a filename or a directory of files to process
     path = arguments.filename_or_dir
     textfsm_template = arguments.fsm_template
-    # Get the template name without the file extension
-    tmp = textfsm_template.split('.')
-    textfsm_name = tmp[0]
+
+    #Get the absolute path
+
     table = False
+
+    # Get the template name without the file extension
+    abs_templ_path = os.path.abspath(arguments.fsm_template)
+    abs_templ_dir, abs_templ_filename = os.path.split(abs_templ_path)
+    # print(f"absolute template dir {abs_templ_dir} and filename {abs_templ_filename}")
+
+    textfsm_name, textfsm_ext = os.path.splitext(abs_templ_filename)
+    # print(f"filename {textfsm_name} and ext {textfsm_ext}")
+
+    start_end_dict = search_string_dict(textfsm_name)
 
     # Initialize list of all valid files
     # The script will always process a list. If a single filename was provided it will be a list with a single element
@@ -186,20 +294,35 @@ def main():
         # If the script was passed a directory it will be a list of files with a valid extension
         for fil in file_list:
 
-            print("Processing device file: " + fil)
 
-            # open_file function returns a file handle
-            fh = open_file(fil, 'r')
 
-            # Read the file contents into a variable for parsing
-            file_contents = fh.read()
-            # Close file
-            fh.close()
+            # Process entire file
 
-            # Send TextFSM Template name and data to parse to text_fsm_parsing function
-            # file_results returns the parsed results and table returns the header
-            fil_results, table = text_fsm_parse(textfsm_template, file_contents)
-            # print("file results of length {} from text_fsm_parse:\n{}".format(str(len(fil_results)),fil_results[1]))
+            try:
+                print(f"Processing unfiltered device file: {fil}")
+                # Read the file contents into a variable for parsing
+                with open(fil, "r") as f:
+                    file_contents = f.read()
+
+                # Send TextFSM Template name and data to parse to text_fsm_parsing function
+                # file_results returns the parsed results and table returns the header
+                fil_results, table = text_fsm_parse(textfsm_template, file_contents)
+                # print("file results of length {} from text_fsm_parse:\n{}".format(str(len(fil_results)),fil_results[1]))
+
+            except textfsm.parser.TextFSMError:
+                print(f"Processing device file section: {fil}")
+                # textfsm.parser.TextFSMError: State Error raised. Rule Line: 29. Input Line: !--- show vrf
+                # Process section
+
+                # Read the file contents into a list for section extraction
+                all_file_contents = load_shcmd_lines(fil)
+
+                file_contents = get_show_section(all_file_contents, start_end_dict['start'], start_end_dict['end'])
+
+                # Send TextFSM Template name and data to parse to text_fsm_parsing function
+                # file_results returns the parsed results and table returns the header
+                fil_results, table = text_fsm_parse(textfsm_template, file_contents)
+                # print("file results of length {} from text_fsm_parse:\n{}".format(str(len(fil_results)),fil_results[1]))
 
             print("Parsing Results")
             # print(fil_results)
